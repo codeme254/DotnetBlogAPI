@@ -1,13 +1,14 @@
 using BlogAPI.Data;
 using BlogAPI.DTOs;
 using BlogAPI.Models;
+using BlogAPI.Repositories;
 using IdGen;
 
 namespace BlogAPI.Services.Implementations;
 
-public class AuthService(AppDbContext dbContext, IdGenerator idGen) : IAuthService
+public class AuthService(IUserRepository userRepository, IdGenerator idGen) : IAuthService
 {
-    private readonly AppDbContext _dbContext = dbContext;
+    private readonly IUserRepository _userRepository = userRepository;
     private readonly IdGenerator _idGen = idGen;
     public async Task RegisterUserAsync(RegisterUserDTO registerUserDTO)
     {
@@ -20,7 +21,7 @@ public class AuthService(AppDbContext dbContext, IdGenerator idGen) : IAuthServi
             PasswordHash = passwordHash
         };
 
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
+        _userRepository.Add(user);
+        await _userRepository.SaveChangesAsync();
     }
 }
