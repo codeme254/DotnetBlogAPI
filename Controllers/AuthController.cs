@@ -1,31 +1,21 @@
 using BlogAPI.Data;
 using BlogAPI.DTOs;
 using BlogAPI.Models;
+using BlogAPI.Services;
 using IdGen;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogAPI.Controllers;
 
 [Route("api/[controller]")]
-public class AuthController(AppDbContext dbContext, IdGenerator idGen) : ControllerBase
+public class AuthController(IAuthService authService) : ControllerBase
 {
-    private readonly AppDbContext _dbContext = dbContext;
-    private readonly IdGenerator _idGen = idGen;
+    private readonly IAuthService _authService = authService;
 
     [HttpPost("register")]
     public async Task<ActionResult> Register([FromBody] RegisterUserDTO registerUserDTO)
     {
-        string PasswordHash = BCrypt.Net.BCrypt.HashPassword(registerUserDTO.Password);
-        var user = new User
-        {
-            Id = _idGen.CreateId(),
-            Username = registerUserDTO.Username,
-            Email = registerUserDTO.Email,
-            PasswordHash = PasswordHash
-        };
-
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
+        await _authService.RegisterUserAsync(registerUserDTO);
 
         return CreatedAtAction(null, new
         {

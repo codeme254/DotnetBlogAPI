@@ -1,4 +1,6 @@
 using BlogAPI.Data;
+using BlogAPI.Services;
+using BlogAPI.Services.Implementations;
 using IdGen;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +15,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // IdGen Service for Snowflake IDs
 builder.Services.AddSingleton(_ => new IdGenerator(0));
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllers();
 var app = builder.Build();
