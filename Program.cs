@@ -8,6 +8,8 @@ using BlogAPI.Services.Implementations;
 using BlogAPI.Validators;
 using FluentValidation;
 using IdGen;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +32,19 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// API Versioning
+builder.Services.AddApiVersioning(options =>
+{
+    // Specify the default api version
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    // If the client doesn't specify the version, use the default version
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    // Include api version in response headers
+    options.ReportApiVersions = true;
+    // Read API version info from the URL segment
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
 
 builder.Services.AddControllers();
 var app = builder.Build();

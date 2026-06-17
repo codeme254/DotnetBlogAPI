@@ -5,13 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogAPI.Controllers;
 
-[Route("api/[controller]")]
+[ApiController]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class AuthController(IAuthService authService, IValidator<RegisterUserDTO> validator) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
     private readonly IValidator<RegisterUserDTO> _validator = validator;
 
     [HttpPost("register")]
+    [ApiVersion("1.0")]
     public async Task<ActionResult> Register([FromBody] RegisterUserDTO registerUserDTO)
     {
         var validationResults = await _validator.ValidateAsync(registerUserDTO);
@@ -35,4 +37,14 @@ public class AuthController(IAuthService authService, IValidator<RegisterUserDTO
             Message = "User created successfully"
         });
     }
+
+    // [HttpPost("register")]
+    // [ApiVersion("2.0")]
+    // public async Task<ActionResult> RegisterV2([FromBody] RegisterUserDTO registerUserDTO)
+    // {
+    //     return Ok(new
+    //     {
+    //         Message = "User created successfully from v2"
+    //     });
+    // }
 }
