@@ -29,11 +29,12 @@ public class AuthController(IAuthService authService, IValidator<RegisterUserDTO
                 Errors = errors
             });
         }
+        // var apiVersion = HttpContext.GetRequestedApiVersion(); // Getting the api version
         await _authService.RegisterUserAsync(registerUserDTO);
 
-        return CreatedAtAction(null, new
+        return StatusCode(StatusCodes.Status201Created, new
         {
-            Status = StatusCodes.Status201Created,
+            Status = 201,
             Message = "User created successfully"
         });
     }
