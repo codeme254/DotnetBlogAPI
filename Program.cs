@@ -1,4 +1,5 @@
 using BlogAPI.Data;
+using BlogAPI.Middlewares;
 using BlogAPI.Repositories;
 using BlogAPI.Repositories.Implementations;
 using BlogAPI.Services;
@@ -25,6 +26,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.MapGet("/", () => "Welcome to the API");
 app.MapControllers();
