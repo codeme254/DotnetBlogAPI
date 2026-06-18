@@ -39,6 +39,18 @@ public class AuthController(IAuthService authService, IValidator<RegisterUserDTO
         });
     }
 
+    [HttpPost("login")]
+    [ApiVersion("1.0")]
+    public async Task<ActionResult> Login([FromBody] LoginDTO loginDTO, CancellationToken cancellationToken)
+    {
+        var token = await _authService.LoginAsync(loginDTO, cancellationToken);
+        return Ok(new
+        {
+            Message = "User logged in successfully",
+            Token = token
+        });
+    }
+
     // [HttpPost("register")]
     // [ApiVersion("2.0")]
     // public async Task<ActionResult> RegisterV2([FromBody] RegisterUserDTO registerUserDTO)

@@ -12,6 +12,20 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         _dbContext.Users.Add(user);
     }
 
+    public async Task<User?> GetUserAsync(string identifier, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+        .FirstOrDefaultAsync(
+            u => u.Username == identifier ||
+            u.Email == identifier, cancellationToken);
+    }
+
+    public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+        .FirstOrDefaultAsync(u => u.Username == username, cancellationToken) != null;
+    }
+
     public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
     {
         return await _dbContext.Users
@@ -21,11 +35,5 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
     public async Task SaveChangesAsync()
     {
         await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
-    {
-        return await _dbContext.Users
-        .FirstOrDefaultAsync(u => u.Username == username, cancellationToken) != null;
     }
 }
