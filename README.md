@@ -58,3 +58,16 @@ Then apply the migrations to the database:
 ```bash
 dotnet ef database update
 ```
+
+### JWT
+In this app, I am not validating the issuer and audience, so the only configurations needed are Key, and expiry in minutes:
+
+```bash
+dotnet user-secrets set "Jwt:Key" "YOUR-SUPER-SECRET-KEY-AT-LEAST-32-CHARACTERS"
+```
+
+Use [this website](https://jwtsecrets.com/#generator) to generate a secret key.
+
+```bash
+dotnet user-secrets set "Jwt:ExpiryMinutes" 15
+```

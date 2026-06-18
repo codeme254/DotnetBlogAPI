@@ -1,3 +1,4 @@
+using System.Text;
 using BlogAPI.Data;
 using BlogAPI.DTOs;
 using BlogAPI.Middlewares;
@@ -8,9 +9,11 @@ using BlogAPI.Services.Implementations;
 using BlogAPI.Validators;
 using FluentValidation;
 using IdGen;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,6 +48,27 @@ builder.Services.AddApiVersioning(options =>
     options.ReportApiVersions = true;
     // Read API version info from the URL segment
     options.ApiVersionReader = new UrlSegmentApiVersionReader();
+});
+
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        // ValidIssuer = jwtSettings["Issuer"],
+        // ValidAudience = jwtSettings["Audience"]
+    };
 });
 
 builder.Services.AddControllers();

@@ -25,7 +25,7 @@ public class AuthService(
 
         if (passwordsMatch == false) throw new InvalidLoginCredentialsException("Invalid login credentials (p)");
 
-        var token = _jwtTokenService.CreateToken(user);
+        var token = _jwtTokenService.CreateJwtToken(user);
         return token;
     }
 

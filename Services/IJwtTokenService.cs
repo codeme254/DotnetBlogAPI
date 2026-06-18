@@ -4,5 +4,5 @@ namespace BlogAPI.Services;
 
 public interface IJwtTokenService
 {
-    string CreateToken(User user);
+    string CreateJwtToken(User user);
 }
