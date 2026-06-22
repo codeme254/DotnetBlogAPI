@@ -1,6 +1,7 @@
 using System.Text;
 using BlogAPI.Data;
 using BlogAPI.DTOs;
+using BlogAPI.Mappers;
 using BlogAPI.Middlewares;
 using BlogAPI.Repositories;
 using BlogAPI.Repositories.Implementations;
@@ -88,6 +89,9 @@ builder.Services.AddAuthentication(options =>
         }
     };
 });
+
+// Mapping Profiles
+builder.Services.AddSingleton<UserMapper>();
 
 builder.Services.AddControllers();
 var app = builder.Build();

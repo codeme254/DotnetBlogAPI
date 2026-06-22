@@ -1,6 +1,7 @@
 using BlogAPI.Data;
 using BlogAPI.DTOs;
 using BlogAPI.Exceptions;
+using BlogAPI.Mappers;
 using BlogAPI.Models;
 using BlogAPI.Repositories;
 using IdGen;
@@ -10,11 +11,14 @@ namespace BlogAPI.Services.Implementations;
 public class AuthService(
     IUserRepository userRepository,
     IdGenerator idGen,
-    IJwtTokenService jwtTokenService) : IAuthService
+    IJwtTokenService jwtTokenService,
+    UserMapper userMapper
+) : IAuthService
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IdGenerator _idGen = idGen;
     private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
+    private readonly UserMapper _userMapper = userMapper;
 
     public async Task<string> LoginAsync(LoginDTO loginDTO, CancellationToken cancellationToken)
     {
@@ -49,15 +53,6 @@ public class AuthService(
         var user = await _userRepository.GetUserProfileAsync(userId, cancellationToken)
         ?? throw new NotFoundException("User not found");
 
-        var getProfileDto = new GetProfileDTO
-        {
-            UserId = user.Id,
-            Email = user.Email,
-            Username = user.Username,
-            DateJoined = user.CreatedAt,
-            LastUpdated = user.UpdatedAt
-        };
-
-        return getProfileDto;
+        return _userMapper.UserToGetProfileDTO(user);
     }
 }
