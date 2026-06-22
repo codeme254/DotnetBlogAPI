@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using BlogAPI.DTOs;
 using BlogAPI.Services;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogAPI.Controllers;
@@ -49,6 +51,16 @@ public class AuthController(IAuthService authService, IValidator<RegisterUserDTO
             Message = "User logged in successfully",
             Token = token
         });
+    }
+
+    [HttpGet("profile")]
+    [ApiVersion("1.0")]
+    [Authorize]
+    public async Task<ActionResult> GetProfile(CancellationToken cancellationToken)
+    {
+        var sub = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var profile = await _authService.GetProfileAsync(long.Parse(sub), cancellationToken);
+        return Ok(profile);
     }
 
     // [HttpPost("register")]

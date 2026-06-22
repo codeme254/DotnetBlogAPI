@@ -43,4 +43,21 @@ public class AuthService(
         _userRepository.Add(user);
         await _userRepository.SaveChangesAsync();
     }
+
+    public async Task<GetProfileDTO?> GetProfileAsync(long userId, CancellationToken cancellationToken)
+    {
+        var user = await _userRepository.GetUserProfileAsync(userId, cancellationToken)
+        ?? throw new NotFoundException("User not found");
+
+        var getProfileDto = new GetProfileDTO
+        {
+            UserId = user.Id,
+            Email = user.Email,
+            Username = user.Username,
+            DateJoined = user.CreatedAt,
+            LastUpdated = user.UpdatedAt
+        };
+
+        return getProfileDto;
+    }
 }

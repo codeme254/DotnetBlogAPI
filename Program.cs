@@ -70,6 +70,23 @@ builder.Services.AddAuthentication(options =>
         // ValidIssuer = jwtSettings["Issuer"],
         // ValidAudience = jwtSettings["Audience"]
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = async ctx =>
+        {
+            ctx.HandleResponse();
+            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            ctx.Response.ContentType = "application/json";
+
+            await ctx.Response.WriteAsJsonAsync(new
+            {
+                Status = StatusCodes.Status401Unauthorized,
+                Message = "Authentication is required to access this resource",
+                Errors = new List<string> { "Unauthorized" }
+            });
+        }
+    };
 });
 
 builder.Services.AddControllers();

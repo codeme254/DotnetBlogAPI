@@ -20,6 +20,12 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             u.Email == identifier, cancellationToken);
     }
 
+    public async Task<User?> GetUserProfileAsync(long id, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+        .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+    }
+
     public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
     {
         return await _dbContext.Users
