@@ -13,7 +13,7 @@ public class RegisterUserDTOValidator : AbstractValidator<RegisterUserDTO>
 
         RuleFor(col => col.Username)
         .NotEmpty().WithMessage("Username is required")
-        .MustAsync(BeUniqueUsernameAsync).WithMessage("Username is already taken")
+        // .MustAsync(BeUniqueUsernameAsync).WithMessage("Username is already taken")
         .Length(3, 20).WithMessage("Length of first name should be between 3 and 20 characters");
 
         RuleFor(col => col.Email)

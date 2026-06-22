@@ -36,6 +36,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddTransient<GlobalExceptionHandler>();
 
 // API Versioning
 builder.Services.AddApiVersioning(options =>
