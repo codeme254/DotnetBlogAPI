@@ -43,9 +43,9 @@ public class AuthController(IAuthService authService, IValidator<RegisterUserDTO
 
     [HttpPost("login")]
     [ApiVersion("1.0")]
-    public async Task<ActionResult> Login([FromBody] LoginDTO loginDTO, CancellationToken cancellationToken)
+    public async Task<ActionResult> Login([FromBody] LoginDTO loginDTO)
     {
-        var token = await _authService.LoginAsync(loginDTO, cancellationToken);
+        var token = await _authService.LoginAsync(loginDTO);
         return Ok(new
         {
             Message = "User logged in successfully",
@@ -56,10 +56,10 @@ public class AuthController(IAuthService authService, IValidator<RegisterUserDTO
     [HttpGet("profile")]
     [ApiVersion("1.0")]
     [Authorize]
-    public async Task<ActionResult> GetProfile(CancellationToken cancellationToken)
+    public async Task<ActionResult> GetProfile()
     {
         var sub = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        var profile = await _authService.GetProfileAsync(long.Parse(sub), cancellationToken);
+        var profile = await _authService.GetProfileAsync(long.Parse(sub));
         return Ok(profile);
     }
 

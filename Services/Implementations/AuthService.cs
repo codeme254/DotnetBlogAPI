@@ -20,9 +20,9 @@ public class AuthService(
     private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
     private readonly UserMapper _userMapper = userMapper;
 
-    public async Task<string> LoginAsync(LoginDTO loginDTO, CancellationToken cancellationToken)
+    public async Task<string> LoginAsync(LoginDTO loginDTO)
     {
-        var user = await _userRepository.GetUserAsync(loginDTO.Identifier, cancellationToken)
+        var user = await _userRepository.GetUserAsync(loginDTO.Identifier)
         ?? throw new InvalidLoginCredentialsException("Invalid login credentials");
 
         bool passwordsMatch = BCrypt.Net.BCrypt.Verify(loginDTO.Password, user.PasswordHash);
@@ -48,9 +48,9 @@ public class AuthService(
         await _userRepository.SaveChangesAsync();
     }
 
-    public async Task<GetProfileDTO?> GetProfileAsync(long userId, CancellationToken cancellationToken)
+    public async Task<GetProfileDTO?> GetProfileAsync(long userId)
     {
-        var user = await _userRepository.GetUserProfileAsync(userId, cancellationToken)
+        var user = await _userRepository.GetUserProfileAsync(userId)
         ?? throw new NotFoundException("User not found");
 
         return _userMapper.UserToGetProfileDTO(user);

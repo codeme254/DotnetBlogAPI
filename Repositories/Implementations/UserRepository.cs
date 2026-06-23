@@ -12,30 +12,30 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         _dbContext.Users.Add(user);
     }
 
-    public async Task<User?> GetUserAsync(string identifier, CancellationToken cancellationToken)
+    public async Task<User?> GetUserAsync(string identifier)
     {
         return await _dbContext.Users
         .FirstOrDefaultAsync(
             u => u.Username == identifier ||
-            u.Email == identifier, cancellationToken);
+            u.Email == identifier);
     }
 
-    public async Task<User?> GetUserProfileAsync(long id, CancellationToken cancellationToken)
+    public async Task<User?> GetUserProfileAsync(long id)
     {
         return await _dbContext.Users
-        .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        .FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<bool> UsernameExistsAsync(string username, CancellationToken cancellationToken)
+    public async Task<bool> UsernameExistsAsync(string username)
     {
         return await _dbContext.Users
-        .FirstOrDefaultAsync(u => u.Username == username, cancellationToken) != null;
+        .FirstOrDefaultAsync(u => u.Username == username) != null;
     }
 
-    public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken)
+    public async Task<bool> EmailExistsAsync(string email)
     {
         return await _dbContext.Users
-        .FirstOrDefaultAsync(u => u.Email == email, cancellationToken) != null;
+        .FirstOrDefaultAsync(u => u.Email == email) != null;
     }
 
     public async Task SaveChangesAsync()

@@ -13,7 +13,7 @@ public class RegisterUserDTOValidator : AbstractValidator<RegisterUserDTO>
 
         RuleFor(col => col.Username)
         .NotEmpty().WithMessage("Username is required")
-        // .MustAsync(BeUniqueUsernameAsync).WithMessage("Username is already taken")
+        .MustAsync(BeUniqueUsernameAsync).WithMessage("Username is already taken")
         .Length(3, 20).WithMessage("Length of first name should be between 3 and 20 characters");
 
         RuleFor(col => col.Email)
@@ -29,12 +29,12 @@ public class RegisterUserDTOValidator : AbstractValidator<RegisterUserDTO>
 
     private async Task<bool> BeUniqueEmailAsync(string email, CancellationToken cancellationToken)
     {
-        return !await _userRepository.EmailExistsAsync(email, cancellationToken);
+        return !await _userRepository.EmailExistsAsync(email);
     }
 
     private async Task<bool> BeUniqueUsernameAsync(string username, CancellationToken cancellationToken)
     {
-        return !await _userRepository.UsernameExistsAsync(username, cancellationToken);
+        return !await _userRepository.UsernameExistsAsync(username);
     }
 
     private static bool BeComplexPassword(string password)
