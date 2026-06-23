@@ -55,4 +55,18 @@ public class AuthService(
 
         return _userMapper.UserToGetProfileDTO(user);
     }
+
+    public async Task<GetProfileDTO> UpdateUserAsync(long userId, UpdateUserDTO updateUserDTO)
+    {
+        var user = await _userRepository.GetUserProfileAsync(userId)
+        ?? throw new NotFoundException("User not found");
+
+        user.Email = updateUserDTO.Email ?? user.Email;
+        user.Username = updateUserDTO.Username ?? user.Username;
+
+        _userRepository.UpdateUser(user);
+        await _userRepository.SaveChangesAsync();
+
+        return _userMapper.UserToGetProfileDTO(user);
+    }
 }

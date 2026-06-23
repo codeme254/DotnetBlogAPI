@@ -30,6 +30,7 @@ builder.Services.AddSingleton(_ => new IdGenerator(0));
 
 // Validators
 builder.Services.AddScoped<IValidator<RegisterUserDTO>, RegisterUserDTOValidator>();
+builder.Services.AddScoped<IValidator<UpdateUserDTO>, UpdateUserDTOValidator>();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

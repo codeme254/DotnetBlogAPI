@@ -9,10 +9,15 @@ namespace BlogAPI.Controllers;
 
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class AuthController(IAuthService authService, IValidator<RegisterUserDTO> validator) : ControllerBase
+public class AuthController(
+    IAuthService authService,
+    IValidator<RegisterUserDTO> validator,
+    IValidator<UpdateUserDTO> updateUserValidator
+) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
     private readonly IValidator<RegisterUserDTO> _validator = validator;
+    private readonly IValidator<UpdateUserDTO> _updateUserValidator = updateUserValidator;
 
     [HttpPost("register")]
     [ApiVersion("1.0")]
@@ -63,13 +68,28 @@ public class AuthController(IAuthService authService, IValidator<RegisterUserDTO
         return Ok(profile);
     }
 
-    // [HttpPost("register")]
-    // [ApiVersion("2.0")]
-    // public async Task<ActionResult> RegisterV2([FromBody] RegisterUserDTO registerUserDTO)
-    // {
-    //     return Ok(new
-    //     {
-    //         Message = "User created successfully from v2"
-    //     });
-    // }
+    [HttpPatch("profile")]
+    [ApiVersion("1.0")]
+    [Authorize]
+    public async Task<ActionResult> UpdateProfile([FromBody] UpdateUserDTO updateUserDTO)
+    {
+        var validationResults = await _updateUserValidator.ValidateAsync(updateUserDTO);
+
+        if (!validationResults.IsValid)
+        {
+            var errors = validationResults.Errors.Select(e => e.ErrorMessage);
+
+            return BadRequest(new
+            {
+                Status = StatusCodes.Status400BadRequest,
+                Message = "Profile update failed",
+                Errors = errors
+            });
+        }
+
+        var sub = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+
+        var updatedUser = await _authService.UpdateUserAsync(long.Parse(sub), updateUserDTO);
+        return Ok(updatedUser);
+    }
 }

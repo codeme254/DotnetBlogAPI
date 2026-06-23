@@ -38,6 +38,11 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
         .FirstOrDefaultAsync(u => u.Email == email) != null;
     }
 
+    public void UpdateUser(User user)
+    {
+        _dbContext.Users.Update(user);
+    }
+
     public async Task SaveChangesAsync()
     {
         await _dbContext.SaveChangesAsync();
